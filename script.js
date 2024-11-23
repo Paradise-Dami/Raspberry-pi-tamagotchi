@@ -1,94 +1,20 @@
-Highcharts.chart('container', {
-    chart: {
-        type: 'bar',
-        height: 600
-    },
-    title: {
-        text: 'Données distantes'
-    },
-    legend: {
-        enabled: false
-    },
-    subtitle: {
-        text: 'Données basiques'
+let counter = 0;
 
-    },
-    data: {
-		csvURL: "https://demo-live-data.highcharts.com/vs-load.csv"
-	},
-    plotOptions: {
-        bar: {
-            colorByPoint: true
-        },
-        series: {
-            zones: [{
-                color: '#4CAF50',
-                value: 0
-            }, {
-                color: '#8BC34A',
-                value: 10
-            }, {
-                color: '#CDDC39',
-                value: 20
-            }, {
-                color: '#CDDC39',
-                value: 30
-            }, {
-                color: '#FFEB3B',
-                value: 40
-            }, {
-                color: '#FFEB3B',
-                value: 50
-            }, {
-                color: '#FFC107',
-                value: 60
-            }, {
-                color: '#FF9800',
-                value: 70
-            }, {
-                color: '#FF5722',
-                value: 80
-            }, {
-                color: '#F44336',
-                value: 90
-            }, {
-                color: '#F44336',
-                value: Number.MAX_VALUE
-            }],
-            dataLabels: {
-                enabled: true,
-                format: '{point.y:.0f}%'
-            }
-        }
-    },
-    tooltip: {
-        valueDecimals: 1,
-        valueSuffix: '%'
-    },
-    xAxis: {
-        type: 'category',
-        labels: {
-            style: {
-                fontSize: '10px'
-            }
-        }
-    },
-    yAxis: {
-        max: 100,
-        title: false,
-        plotBands: [{
-            from: 0,
-            to: 30,
-            color: '#E8F5E9',
-       }, {
-            from: 30,
-            to: 70,
-            color: '#FFFDE7',
+const bouton = document.getElementById("button");
 
-        }, {
-            from: 70,
-            to: 100,
-            color: '#FFEBEE',
-        }]
+
+function reaction() {
+    if (counter > 5) {
+        document.getElementById("face").src = "C:/Users/Imad/Documents/Site internet/Tamagotchi/Assets/image2.png"
+    } else {
+        document.getElementById("face").src = "C:/Users/Imad/Documents/Site internet/Tamagotchi/Assets/image.png"
+
     }
-});
+}
+
+function nourrir(nombre) {
+    counter = counter + nombre ;
+    console.log(counter)
+    document.getElementById("compteur").innerHTML = counter;
+    reaction();
+}
