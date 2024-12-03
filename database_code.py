@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import time
-import datetime as date
+from datetime import datetime as dt
 """
 def find(name, path):
     for root, dirs, files in os.walk(path):
@@ -19,7 +19,7 @@ print(find("test.db", "Users\prude\PycharmProjects\tamagotchi\test.db"))
 def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int,cursor):
     """met à jour les attributs de la base de données"""
     time.sleep(1)
-    cursor.execute("UPDATE " + table + " SET " + attribut + " = '" + donnee + "';")  # 50 charge neutre temporaire
+    cursor.execute("UPDATE " + table + " SET " + attribut + " = '" + str(donnee) + "';")  # 50 charge neutre temporaire
 
 
 try:
@@ -27,22 +27,27 @@ try:
     if not os.path.isfile("bdd.db"):
         with sqlite3.connect("bdd.db") as conn:
             cur = conn.cursor()
-            cur.execute("CREATE TABLE CREATURE(nom,sante, faim, soif, ennui, statut,dernièreConnexion);")
-            cur.execute("CREATE TABLE CAPTEURS(boutonFaim,boutonSoif,potentiomètre);")
-            cur.execute("INSERT INTO CREATURE(nom,sante, faim, soif, ennui, statut) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(date.today()) + "' );")
+            cur.execute("CREATE TABLE CREATURE(nom,sante, nourri, désaltéré, ennui, statut,dernièreConnexion);")
+            cur.execute("CREATE TABLE CAPTEURS(boutonNourrir,boutonBoire,potentiomètre);")
+            cur.execute("INSERT INTO CREATURE(nom,sante, faim, soif, ennui, statut) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(dt.today()) + "' );")
             cur.execute("INSERT INTO CAPTEURS(boutonFaim,boutonSoif,potentiomètre) VALUES(False,False,50);") #50 charge neutre temporaire
 
     #sinon s'y connecte
     else:
         with sqlite3.connect("database.db") as conn:
             cur = conn.cursor()
-            miseAjourDonnéeBDD("CREATURE","faim",cur)
+            #miseAjourDonnéeBDD("CREATURE","nourri",5,cur)
 
             pass
 
-
 except sqlite3.OperationalError as e:
     print("Failed to open database:", e)
+
+def temp():
+    with sqlite3.connect("database.db") as conn:
+        cur = conn.cursor()
+        return cur
+
 
 
 
