@@ -16,10 +16,12 @@ print(find("test.db", "Users\prude\PycharmProjects\tamagotchi\test.db"))
 
 #création de la database avec ses tables
 
-def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int,cursor):
+def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int):
     """met à jour les attributs de la base de données"""
-    time.sleep(1)
-    cursor.execute("UPDATE " + table + " SET " + attribut + " = '" + str(donnee) + "';")  # 50 charge neutre temporaire
+    with sqlite3.connect("bdd.db") as conn:
+            cur = conn.cursor()
+            time.sleep(1)
+            cur.execute("UPDATE " + table + " SET " + attribut + " = '" + str(donnee) + "';")  # 50 charge neutre temporaire
 
 
 try:
@@ -29,8 +31,8 @@ try:
             cur = conn.cursor()
             cur.execute("CREATE TABLE CREATURE(nom,sante, nourri, désaltéré, ennui, statut,dernièreConnexion);")
             cur.execute("CREATE TABLE CAPTEURS(boutonNourrir,boutonBoire,potentiomètre);")
-            cur.execute("INSERT INTO CREATURE(nom,sante, faim, soif, ennui, statut) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(dt.today()) + "' );")
-            cur.execute("INSERT INTO CAPTEURS(boutonFaim,boutonSoif,potentiomètre) VALUES(False,False,50);") #50 charge neutre temporaire
+            cur.execute("INSERT INTO CREATURE(nom,sante, nourri, désaltéré, ennui, statut,dernièreConnexion) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(dt.today().strftime("%Y-%m-%d %H:%M:%S")) + "' );")
+            cur.execute("INSERT INTO CAPTEURS(boutonNourrir,boutonBoire,potentiomètre) VALUES(False,False,50);") #50 charge neutre temporaire
 
     #sinon s'y connecte
     else:
@@ -48,7 +50,7 @@ def temp():
         cur = conn.cursor()
         return cur
 
-
+print("fini")
 
 
 
