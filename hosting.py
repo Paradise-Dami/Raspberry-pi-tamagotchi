@@ -1,12 +1,61 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec  4 15:18:13 2024
+from fastapi import FastAPI, BackgroundTasks, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+import subprocess
+import time
 
-@author: 21408644
-"""
+app = FastAPI()
 
-from flask import Flask, jsonify, request
+templates = Jinja2Templates(directory="templates")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
+
+"""@app.post("/run_script")
+async def run_script(background_tasks: BackgroundTasks, request: Request):
+    background_tasks.add_task(run_python_script, request)
+    return templates.TemplateResponse("result.html", {"request": request})
+
+def run_python_script(request):
+    try:
+        output = subprocess.run(["python", "/path/to/your/script.py"], capture_output=True, text=True, check=True)
+        print(f"Script output:\n{output.stdout}")
+    except subprocess.CalledProcessError as e:
+        print(f"Script execution failed:\n{e.stderr}")"""
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -32,3 +81,5 @@ def add_numbers():
 
 if __name__ == '__main__':
     app.run(debug=True)
+"""
+
