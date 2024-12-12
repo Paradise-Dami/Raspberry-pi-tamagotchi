@@ -3,7 +3,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import subprocess
-import time
 
 app = FastAPI()
 
@@ -16,13 +15,35 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-"""@app.post("/run_script")
+@app.post("/run_script")
 async def run_script(background_tasks: BackgroundTasks, request: Request):
     background_tasks.add_task(run_python_script, request)
-    return templates.TemplateResponse("result.html", {"request": request})
+    return None
+
+@app.post("/nourrir")
+async def run_script(background_tasks: BackgroundTasks, request: Request):
+    background_tasks.add_task(nourrir)
+    return None
+
+@app.post("/boire")
+async def run_script(background_tasks: BackgroundTasks, request: Request):
+    background_tasks.add_task(boire)
+    return None
+
+def nourrir():
+    print("Miam")
+
+def boire():
+    print("j'ai pas d'onomathopées pour la soif a part AHHHHHH")
 
 def run_python_script(request):
     try:
+        print("Hello World")
+    except subprocess.CalledProcessError as e:
+        print(f"Script execution failed:\n{e.stderr}")
+
+
+    """try:
         output = subprocess.run(["python", "/path/to/your/script.py"], capture_output=True, text=True, check=True)
         print(f"Script output:\n{output.stdout}")
     except subprocess.CalledProcessError as e:

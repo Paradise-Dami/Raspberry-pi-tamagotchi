@@ -5,7 +5,7 @@
         <title>Page d'accueil du Tamagotchi</title>
         <!-- Jour 1, je sais plus coder en html, la galère -->
         <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
-         <script type="javascript" src="{{ url_for('static', path='/script.js') }}"></script>
+         <script src="{{ url_for('static', path='/script.js') }}"></script>
     </head>
     <body class="background">
         
@@ -29,11 +29,11 @@
                     <p>Etat</p>
                 </div>
                 
-            </application>5()
+            </application>
             </boite_d>
             <actions class="actions">
-                    <button class="button" id="runScriptBtn">Nourrir</button>
-                    <button class="button"id="runScriptBtn">Boire</button>
+                    <button class="button" onclick="nourrir()">Nourrir</button>
+                    <button class="button" onclick="boire()">Boire</button>
 
             </actions>
     </body>
