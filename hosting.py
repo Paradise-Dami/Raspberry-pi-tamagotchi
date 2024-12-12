@@ -1,8 +1,8 @@
 from fastapi import FastAPI, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,UJSONResponse
 from fastapi.staticfiles import StaticFiles
-import subprocess
+import database_code as db
 
 app = FastAPI()
 
@@ -15,10 +15,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-@app.post("/run_script")
-async def run_script(background_tasks: BackgroundTasks, request: Request):
-    background_tasks.add_task(run_python_script, request)
-    return None
 
 @app.post("/nourrir")
 async def run_script(background_tasks: BackgroundTasks, request: Request):
@@ -30,24 +26,23 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
     background_tasks.add_task(boire)
     return None
 
+
+@app.get("/get_db", response_class=UJSONResponse)
+async def get_db():
+    content = str(db.afficher_db("bdd.db"))
+    """content = [
+        {"id": 1, "name": "Laptop", "price": 1000.00},
+        {"id": 2, "name": "Phone", "price": 500.00},
+        {"id": 3, "name": "Headphones", "price": 200.00}
+    ]"""
+    return content
+
 def nourrir():
     print("Miam")
 
 def boire():
     print("j'ai pas d'onomathopées pour la soif a part AHHHHHH")
 
-def run_python_script(request):
-    try:
-        print("Hello World")
-    except subprocess.CalledProcessError as e:
-        print(f"Script execution failed:\n{e.stderr}")
-
-
-    """try:
-        output = subprocess.run(["python", "/path/to/your/script.py"], capture_output=True, text=True, check=True)
-        print(f"Script output:\n{output.stdout}")
-    except subprocess.CalledProcessError as e:
-        print(f"Script execution failed:\n{e.stderr}")"""
 
 if __name__ == "__main__":
     import uvicorn

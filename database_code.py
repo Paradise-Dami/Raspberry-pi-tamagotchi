@@ -50,6 +50,15 @@ def temp():
         cur = conn.cursor()
         return cur
 
+def afficher_db(db):
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM CAPTEURS")
+    rows = cur.fetchall()
+    conn.close()
+    return rows
+
+
 print("fini")
 
 
