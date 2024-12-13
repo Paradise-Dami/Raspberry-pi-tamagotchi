@@ -1,68 +1,74 @@
 import RPi.GPIO as GPIO
 import time
-import math
-import sys
+from grove.grove_button import GroveButton
 from grove.adc import ADC
 
-def buzz(pin, amount=1, delay=1) -> None:
-    """Fait sonner le buzzer [amount] fois avec une pause de [delay] secondes entre chaque buzz."""
+
+def sortie_buzz(pin, quantite, delai, freq=100, dc=1)-> None:
+    """Hyp: branchement du capteur sur un pin de type D
+        Fait sonner le buzzer [quantite] fois avec une pause de [delai] secondes entre chaque buzz.
+    """
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(pin, GPIO.OUT)
-    buzz = GPIO.PWM(pin, 100)
+    buzz = GPIO.PWM(pin, freq)
     buzz.start(0)
     try:
-        for i in range(amount):
-            buzz.ChangeDutyCycle(1) #bruit
-            time.sleep(delay/2)
+        for i in range(quantite):
+            buzz.ChangeDutyCycle(dc) #bruit
+            time.sleep(delai/2)
             buzz.ChangeDutyCycle(0) #silence
-            time.sleep(delay/2)
+            time.sleep(delai/2)
     finally:
         buzz.stop()
         GPIO.cleanup()
 
-#buzz(5, 3, 0.5)
 
-
-class button_input:
-    """Appelle les deux fonctions ci-dessous lorsque le boutton est appuyé/relaché"""
+class entree_bouton:
+    """Hyp: branchement du capteur sur un pin de type D
+        Appel des fonctions ci-dessous lorsque le boutton est appuyé/relaché
+    """
     def __init__(self, pin):
-        from grove.grove_button import GroveButton
-        self.button = GroveButton(pin)
+        self.bouton = GroveButton(pin)
         
-        def on_press(t):
-            """Lance un chronomètre lorsque le boutton est pressé"""
-            global start_time
-            start_time = time.time()
-        def on_release(t):
-            """Lorsque le boutton est relaché, sauvegarde la durée d'appui du boutton dans une variable globale"""
-            global end_time
-            end_time = time.time()-start_time #duration d'appui du boutton
-        
-        self.button.on_press = on_press
-        self.button.on_release = on_release
-
-#button1 = button_input(16)
+        def sur_appui(t)-> None: #Lance un chronomètre lorsque le boutton est pressé
+            global temps_debut
+            temps_debut = time.time()
+        def sur_relache(t)-> None: #Lorsque le boutton est relaché, sauvegarde la durée d'appui du boutton dans une variable globale
+            global temps_fin
+            temps_fin = time.time()-temps_debut #duration d'appui du boutton
+            print("Bouton tenu pendant",temps_fin,"secondes!")
+            
+        self.bouton.on_press = sur_appui
+        self.bouton.on_release = sur_relache
 
 
-"""class GroveRotaryAngleSensor(ADC):
-    def __init__(self, channel):
-        self.channel = channel
+class entree_angle(ADC):
+    """Hyp: branchement du capteur sur un pin de type A (et non D !)
+        Connecte le capteur afin de pouvoir extraire sa rotation
+    """
+    def __init__(self, pin):
+        self.pin = pin
         self.adc = ADC()
     
     @property
-    def value(self):
-        Renvoit langle de rotation du potentiomètre
-        return self.adc.read(self.channel)
+    def valeur(self)-> int:
+        """Renvoit l'angle de rotation du potentiomètre (mini: 0 /maxi: 999)"""
+        return self.adc.read(self.pin)
 
-def angle_sensor():
-    if len(sys.argv) < 2:
-        print('Usage: {} adc_channel'.format(sys.argv[0]))
-        sys.exit(1)
 
-    sensor = GroveRotaryAngleSensor(int(sys.argv[1]))
 
+def example()-> None:
+    """Hyp: connectez le buzzeur sur le pin D5, le boutton sur le pin D16, et le potentiometre sur le pin A0
+        Example d'utilisation des trois modules
+        (utilisez les un par un)
+    """
+    #bouton = entree_bouton(16)
+    
+    #sortie_buzz(5, 3, 0.5, 500, 1)
+    
+    """angle = entree_angle(0)
     while True:
-        print('Rotary Value: {}'.format(sensor.value))
-        time.sleep(.2)
-
-angle_sensor()"""
+        print(angle.valeur)
+        time.sleep(0.1)"""
+    
+example()
