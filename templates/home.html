@@ -5,7 +5,7 @@
         <title>Page d'accueil du Tamagotchi</title>
         <!-- Jour 1, je sais plus coder en html, la galère -->
         <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
-         <script src="{{ url_for('static', path='/script.js') }}"></script>
+        
     </head>
     <body class="background">
         
@@ -18,8 +18,52 @@
         </header>
 
         <application class="application">
-            <boite_g>
-                <img src="{{ url_for('static', path='Assets/chart.png') }}" alt="chart.png" class="avatar">
+            <boite_g class="boite_g">
+                
+                <div class="stat">
+                    <div class="progress">
+                        <div class="progress-done" id="sante"><p class="texteStat">Santé</p></div>
+                        
+                    </div>
+                    <!-- pour tester les values
+                    <div class="inputContainer">
+                        
+                        <div>
+                            <h3> value</h3>
+                            <input class="input" type="number" />
+                        </div>
+                        
+                        <div>
+                            <h3> Max value</h3>
+                            <input class="maxInput" type="number" />
+                        </div> 
+                        
+                    </div>
+                    -->
+                </div>
+
+                
+                <div class="stat">
+                    <div class="progress">
+                        <div class="progress-done" id="nourriture"><p class="texteStat">Nourriture</p></div>
+                        
+                    </div>
+                </div>
+
+                
+                <div class="stat">
+                    <div class="progress">
+                        <div class="progress-done" id="hydratation"><p class="texteStat">Hydratation</p></div>
+                    </div>
+                </div>
+
+                
+                <div class="stat">
+                    <div class="progress">
+                        <div class="progress-done" id="divertissement"><p class="texteStat">Divertissement</p></div>
+                    </div>
+                </div>
+                
             </boite_g>
 
             <boite_d>
@@ -29,13 +73,14 @@
                     <p>Etat</p>
                 </div>
                 
-            </application>
+        </application>
             </boite_d>
             <actions class="actions">
                     <button class="button" onclick="nourrir()">Nourrir</button>
                     <button class="button" onclick="boire()">Boire</button>
                     <button class="button" onclick="fetchData()">SQL</button>
             </actions>
+            <script src="{{ url_for('static', path='/script.js') }}"></script>
     </body>
 </html>
 

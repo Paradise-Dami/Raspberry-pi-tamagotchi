@@ -110,8 +110,53 @@ boite_d {
   border-radius: 10px;
 }
 
-.actions{
+
+.actions {
   display: flex;
   flex-direction: end;
   justify-content: space-evenly;
+}
+
+
+boite_g {
+  height: 31vh;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-top: 10px;
+}
+
+/* je n'ai aps fait le css du body*/
+.progress {
+  background-color:grey;
+  border-radius : 0px 20px 20px 0px;
+  height: 40px;
+  width: 500px;
+  
+}
+
+.progress-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(to left,
+  #27d1da,
+  #34a4d5,
+  #156aee);
+  box-shadow: 0 5px 5px -6px #156aee, 0 3px 7px #34a4d5;
+  border-radius: 0px 20px 20px 0px;
+  color: #fff;
+  height: 100%;
+  width: 0%;
+  transition: 1s ease 0.3s;
+}
+
+.stat {
+  display: flex;
+  margin: 12px;
+}
+
+.texteStat {
+  margin-left: 12px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif ;
 }
