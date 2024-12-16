@@ -1,8 +1,9 @@
 from fastapi import FastAPI, BackgroundTasks, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse,UJSONResponse
+from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
-import database_code as db
+import fonctions_statistiques as fx
+
 
 app = FastAPI()
 
@@ -27,15 +28,11 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
     return None
 
 
-@app.get("/get_db", response_class=UJSONResponse)
-async def get_db():
-    content = str(db.afficher_db("bdd.db"))
-    """content = [
-        {"id": 1, "name": "Laptop", "price": 1000.00},
-        {"id": 2, "name": "Phone", "price": 500.00},
-        {"id": 3, "name": "Headphones", "price": 200.00}
-    ]"""
-    return content
+
+@app.get("/get_stats_tamagotchi")
+async def get_stats_tamagotchi():
+    data = fx.afficher_db("bdd.db","CREATURE")
+    return JSONResponse(content=data)
 
 def nourrir():
     print("Miam")

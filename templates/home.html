@@ -25,27 +25,12 @@
                         <div class="progress-done" id="sante"><p class="texteStat">Santé</p></div>
                         
                     </div>
-                    <!-- pour tester les values
-                    <div class="inputContainer">
-                        
-                        <div>
-                            <h3> value</h3>
-                            <input class="input" type="number" />
-                        </div>
-                        
-                        <div>
-                            <h3> Max value</h3>
-                            <input class="maxInput" type="number" />
-                        </div> 
-                        
-                    </div>
-                    -->
                 </div>
 
                 
                 <div class="stat">
                     <div class="progress">
-                        <div class="progress-done" id="nourriture"><p class="texteStat">Nourriture</p></div>
+                        <div id="progress-done1" id="nourriture"><p class="texteStat">Nourriture</p></div>
                         
                     </div>
                 </div>
@@ -78,7 +63,7 @@
             <actions class="actions">
                     <button class="button" onclick="nourrir()">Nourrir</button>
                     <button class="button" onclick="boire()">Boire</button>
-                    <button class="button" onclick="fetchData()">SQL</button>
+                    <button class="button" onclick="fetchData_stats_tamagotchi()">SQL</button>
             </actions>
             <script src="{{ url_for('static', path='/script.js') }}"></script>
     </body>

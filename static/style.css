@@ -95,7 +95,7 @@ p {
 .application {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 80px;
   padding: 10px;
 }
 
@@ -135,7 +135,7 @@ boite_g {
   
 }
 
-.progress-done {
+#progress-done1 {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,7 +147,7 @@ boite_g {
   border-radius: 0px 20px 20px 0px;
   color: #fff;
   height: 100%;
-  width: 0%;
+  width: 10%;
   transition: 1s ease 0.3s;
 }
 

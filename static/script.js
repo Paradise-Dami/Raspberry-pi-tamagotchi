@@ -16,16 +16,7 @@ async function nourrir() {
 }
 
 
-async function fetchData() {
-    try {
-        const response = await fetch('/get_db');
-        const data = await response.json();
-        console.log(data);
 
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
 
 const progress = document.querySelector(".progress-done");
 const input = document.querySelector('.input');
@@ -39,17 +30,6 @@ function changerWidth() {
     progress.style.width = `${(finalValue / max)*100}%`;
 }
 
-/* tests pour changer les datas et faire fonctionner les barres de stat
-input.addEventListener("keyup", function() {
-    finalValue = parseInt(input.value, 10); // renvoie un integer en base 10
-
-    changeWidth();
-});
-
-maxInput.addEventListener("keyup", function(){
-    max = parseInt(maxInput.value, 10);
-    changeWidth();
-}); */
 
 // pas fini
 function majStats() {
@@ -60,3 +40,33 @@ function majStats() {
     }
 
 }
+
+async function fetchData_stats_tamagotchi() {
+    //appel des données du tamagotchi
+    try {
+        const response = await fetch('get_stats_tamagotchi', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Convertir la réponse JSON en objet JavaScript
+        const data = await response.json();
+
+        console.log("Données reçues:", data);
+
+        // Exemple d'utilisation des données
+        return data
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error.message);
+    }
+    
+}
+
+
+
+setInterval(fetchData_stats_tamagotchi,5000)

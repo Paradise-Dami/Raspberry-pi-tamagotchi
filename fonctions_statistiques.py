@@ -3,13 +3,32 @@ import sqlite3
 import os
 import time
 
-def afficher_db(db):
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM CAPTEURS")
-    rows = cur.fetchall()
-    conn.close()
-    return rows
+def afficher_db(db: str, table: str) -> dict:
+    """return la data de la table sql sous forme de dictionnaire."""
+    try:
+        con = sqlite3.connect(db)
+        con.row_factory = sqlite3.Row
+        
+        # Exécution de la requête
+        cursor = con.execute(f"SELECT * FROM [{table}]")
+        rows = cursor.fetchall()
+        
+        # Conversion des résultats en JSON
+        json_data = []
+        for row in rows:
+            result = {k: row[k] for k in row.keys()}
+            json_data.append(result)
+        con.close()
+        return result
+    
+    except sqlite3.Error as e:
+        print(f"Erreur de db: {e}")
+        return {"erreur": str(e)}
+    
+    except Exception as e:
+        print(f"Erreur innatendue: {e}")
+        return {"erreur": "erreur"}
+
 def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int | list | dict)-> None:
     """met à jour les attributs de la base de données"""
     with sqlite3.connect("bdd.db") as conn:
@@ -23,10 +42,10 @@ def gestionDonnees()-> None:
     if not os.path.isfile("bdd.db"):
         with sqlite3.connect("bdd.db") as conn:
             cur = conn.cursor()
-            cur.execute("CREATE TABLE CREATURE(nom,sante, nourri, désaltéré, ennui, statut,dernièreConnexion);")
-            cur.execute("CREATE TABLE CAPTEURS(boutonNourrir,boutonBoire,potentiomètre);")
-            cur.execute("INSERT INTO CREATURE(nom,sante, nourri, désaltéré, ennui, statut, dernièreConnexion) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(dt.today().strftime("%Y-%m-%d %H:%M:%S")) + "' );")
-            cur.execute("INSERT INTO CAPTEURS(boutonNourrir,boutonBoire,potentiomètre) VALUES(False,False,50);") #50 charge neutre temporaire
+            cur.execute("CREATE TABLE CREATURE(nom,sante, nourri, desaltere, ennui, statut,derniereConnexion);")
+            cur.execute("CREATE TABLE CAPTEURS(boutonNourrir,boutonBoire,potentiometre);")
+            cur.execute("INSERT INTO CREATURE(nom,sante, nourri, desaltere, ennui, statut, derniereConnexion) VALUES('Beemo', 100, 20, 20, 10, 'Heureux', '" + str(dt.today().strftime("%Y-%m-%d %H:%M:%S")) + "' );")
+            cur.execute("INSERT INTO CAPTEURS(boutonNourrir,boutonBoire,potentiometre) VALUES(False,False,50);") #50 charge neutre temporaire
 
     #sinon modifie les données normalement
     else:
@@ -141,7 +160,7 @@ def derniereConnexion():
         if t[2] > 5 or t[1] > 0 or t[0] > 0:
             miseAjourDonnéeBDD("CREATURE", "dernièreConnexion", str(dt.now().strftime("%Y-%m-%d %H:%M:%S")))
             #mise à jour de toutes les autres stats
-            faim(derniereCo_save,)
+            faim(derniereCo_save,0)
             soif(derniereCo_save,)
             ennui(derniereCo_save,)
 #derniereConnexion()
@@ -232,4 +251,4 @@ listePaliers = [50, 50, 50, 50]
 #statutAffiche(listePaliers)
 """
 
-gestionDonnees()
+#gestionDonnees()
