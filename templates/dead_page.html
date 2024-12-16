@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Page d'accueil du Tamagotchi</title>
+        <!-- elle est aps vrmt terminée, faut que je check les têtes du tamagotchi-->
+        <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+        
+    </head>
+    <body class="background">
+        
+        <header class="top_bar">
+            <logo>Ahahhaha c le logo</logo>
+            <div class="compte_utilisateur">
+                <img src="{{ url_for('static', path='Assets/utilisateur.png') }}" class="img_utilisateur">
+                <p>Parent</p>
+            </div>
+        </header>
+
+        <application class="application">
+
+            <boite_d>
+                    <img src="{{ url_for('static', path='Assets/image.png') }}" src="" alt="bmo_calme.png" id="face" class="avatar">
+                <div class="info_tama">
+                    <p>Identité</p>
+                    <p>Etat</p>
+                </div>
+                
+        </application>
+            </boite_d>
+            <actions class="actions">
+                <button class="button" onclick="nourrir()">Adopter une nouvelle créature ?</button>
+            </actions>
+            <script src="{{ url_for('static', path='/script.js') }}"></script>
+    </body>
+</html>
+
