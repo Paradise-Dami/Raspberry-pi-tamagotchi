@@ -20,7 +20,7 @@ def sortie_buzz(pin, quantite, delai, freq=100, dc=1)-> None:
             time.sleep(delai/2)
     finally:
         buzz.stop()
-        GPIO.cleanup()
+#sortie_buzz(5, 3, 0.5, 500, 1)
 
 
 class entree_bouton:
@@ -40,6 +40,7 @@ class entree_bouton:
             
         self.bouton.on_press = sur_appui
         self.bouton.on_release = sur_relache
+#bouton = entree_bouton(16)
 
 
 class entree_angle(ADC):
@@ -54,21 +55,23 @@ class entree_angle(ADC):
     def valeur(self)-> int:
         """Renvoit l'angle de rotation du potentiomètre (mini: 0 /maxi: 999)"""
         return self.adc.read(self.pin)
-
-
-
-def example()-> None:
-    """Hyp: connectez le buzzeur sur le pin D5, le boutton sur le pin D16, et le potentiometre sur le pin A0
-        Example d'utilisation des trois modules
-        (utilisez les un par un)
-    """
-    #bouton = entree_bouton(16)
-    
-    #sortie_buzz(5, 3, 0.5, 500, 1)
-    
-    """angle = entree_angle(0)
+ """angle = entree_angle(0)
     while True:
         print(angle.valeur)
         time.sleep(0.1)"""
-    
-example()
+
+
+# ------------------------------ Fonctions pratiques ------------------------------
+
+def temperature(pin)-> str:
+    """Hyp: Branchez le potentiomètre sur un pin de type A
+    Retourne le statut de la température en fonction de la valeur du potentiomètre,
+    la température varie de -10 à 40 degrés Celsius.
+    """
+    angle = entree_angle(pin)
+    temp = angle.valeur/20 - 10
+
+    dico_temp = {"Glacial": temp < 0, "Froid": 0 <= temp < 10, "Doux": 10 <= temp < 20, "Chaud": 20 <= temp < 30, "Tropical": 30 <= temp < 40, "Caniculaire": temp >= 40}
+    for cle in dico_temp:
+        if dico_temp[cle]:
+            return temp, cle
