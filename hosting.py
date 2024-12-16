@@ -18,9 +18,12 @@ async def root(request: Request):
 
 
 @app.post("/nourrir")
-async def run_script(background_tasks: BackgroundTasks, request: Request):
-    background_tasks.add_task(nourrir)
+async def nourrir():
+    sante=fx.afficher_db("bdd.db","CREATURE")["sante"]
+    if sante <= 20:
+        fx.miseAjourDonnéeBDD("CREATURE","sante",sante+1)
     return None
+
 
 @app.post("/boire")
 async def run_script(background_tasks: BackgroundTasks, request: Request):
@@ -34,8 +37,6 @@ async def get_stats_tamagotchi():
     data = fx.afficher_db("bdd.db","CREATURE")
     return JSONResponse(content=data)
 
-def nourrir():
-    print("Miam")
 
 def boire():
     print("j'ai pas d'onomathopées pour la soif a part AHHHHHH")

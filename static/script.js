@@ -41,7 +41,7 @@ function majStats() {
 
 }
 
-async function fetchData_stats_tamagotchi() {
+async function fetchDataStatsTamagotchi() {
     //appel des données du tamagotchi
     try {
         const response = await fetch('get_stats_tamagotchi', {
@@ -56,9 +56,8 @@ async function fetchData_stats_tamagotchi() {
         // Convertir la réponse JSON en objet JavaScript
         const data = await response.json();
 
-        console.log("Données reçues:", data);
-
         // Exemple d'utilisation des données
+        console.log(data)
         return data
 
     } catch (error) {
@@ -67,6 +66,20 @@ async function fetchData_stats_tamagotchi() {
     
 }
 
+async function gameOver() {
+    data = await fetchDataStatsTamagotchi()
+    try{
+        vie = data["sante"]
+        if (vie <= 0) {
+            window.location.replace("/mort");
+        }
+        else {
+            console.log("en vie")
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error.message)
+    }
+}
 
 
-setInterval(fetchData_stats_tamagotchi,5000)
+setInterval(gameOver,5000)
