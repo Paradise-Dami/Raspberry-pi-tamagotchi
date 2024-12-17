@@ -1,9 +1,7 @@
-"""
 import RPi.GPIO as GPIO
 import time
 from grove.grove_button import GroveButton
 from grove.adc import ADC
-"""
 
 def sortie_buzz(pin, quantite, delai, freq=100, dc=1)-> None:
     """Hyp: branchement du capteur sur un pin de type D
