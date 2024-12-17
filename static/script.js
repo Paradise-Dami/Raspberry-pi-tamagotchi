@@ -15,6 +15,13 @@ async function nourrir() {
 }
 }
 
+async function affamer() {
+    try {
+    await fetch('/affamer', {method: 'POST'});
+    } catch (error) {
+        console.error('Error fetching data:', error);
+}
+}
 
 async function reset() {
     try {

@@ -37,7 +37,7 @@ def afficher_db(db: str, table: str) -> dict:
         for row in rows:
             result = {k: row[k] for k in row.keys()}
             json_data.append(result)
-        return result
+        return json_data[0]
     
     except sqlite3.Error as e:
         print(f"Erreur de db: {e}")
