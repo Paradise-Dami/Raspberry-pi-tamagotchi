@@ -2,7 +2,7 @@ from datetime import datetime as dt
 import sqlite3
 import os
 import time
-#import Fonction_Modules as fm
+import Fonction_Modules as fm
 
 if not os.path.isfile("bdd.db"):
     with sqlite3.connect("bdd.db", check_same_thread=False) as conn:
@@ -148,6 +148,15 @@ def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
 def faim(derniereConnexion,manque:list[int,int,int])-> None:
     print("faim")
     besoinQuiSEcoule("nourri",tempsPasse(derniereConnexion),manque)
+
+
+def nourrir(t)-> None:
+    """Augmente la statistique nourri dans la bdd"""
+    sasiete = int(fx.afficher_db("bdd.db","CREATURE")["nourri"])
+    miseAjourDonnéeBDD("CREATURE","nourri", sasiete + 10)
+    fm.sortie_buzz(5, 1, 0.5, 500, 1) #petit bruit pour confirmer l'action
+bouton_nourrir = GroveButton(16)
+bouton_nourrir.on_press = nourrir
 
 
 def soif(derniereConnexion, manque:list):
