@@ -14,13 +14,13 @@ if not os.path.isfile("bdd.db"):
 
 #----Variables----
 database = sqlite3.connect("bdd.db", check_same_thread=False)
-dicStatuts = {"sante":"est malade", "nourri":"a faim",
+dicStatuts: dict= {"sante":"est malade", "nourri":"a faim",
                          "ennui":"s'ennuie" , "desaltere":"a soif"}
-dicPaliers = {"sante": 50, "nourri": 50, "desaltere": 50, "ennui": 50}
-date = "2024-12-02 16:37:56"
-date2 = "2024-12-01 23:37:56"
-affecteNormal = [30,  4,    2]
-affecteFort =   [45,  11,   5]
+dicPaliers: dict = {"sante": 50, "nourri": 50, "desaltere": 50, "ennui": 50}
+date: str = "2024-12-02 16:37:56"
+date2: str = "2024-12-01 23:37:56"
+affecteNormal: list = [30,  4,    2]
+affecteFort: list =   [45,  11,   5]
 
 def afficher_db(db: str, table: str) -> dict:
     """return la data de la table sql sous forme de dictionnaire."""
@@ -37,8 +37,9 @@ def afficher_db(db: str, table: str) -> dict:
         for row in rows:
             result = {k: row[k] for k in row.keys()}
             json_data.append(result)
-        return json_data[0]
+        return json_data[0] #on n'a qu'un seul utilisateur pour le moment donc je prends juste la première valeur
     
+    #Gérer tout types d'erreurs dans la lecture
     except sqlite3.Error as e:
         print(f"Erreur de db: {e}")
         return {"erreur": str(e)}
@@ -146,6 +147,7 @@ def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
     
 
 def faim(derniereConnexion,manque:list[int,int,int])-> None:
+    #applique un effet de faim au tamagotchi, faisant baisser sa satiété
     print("faim")
     besoinQuiSEcoule("nourri",tempsPasse(derniereConnexion),manque)
 
@@ -169,7 +171,7 @@ def ennui(derniereConnexion, manque:list):
     besoinQuiSEcoule("ennui",tempsPasse(derniereConnexion),manque)
 
 
-def derniereConnexion():
+def derniereConnexion() -> None:
     #save la dernière connexion toutes les 1 minutes
     global dicStatuts
     t = tempsPasse()
@@ -189,7 +191,7 @@ def derniereConnexion():
 #derniereConnexion()
 
 
-def mourir():
+def mourir() -> None:
     conn = database
     cur = conn.cursor()
     cur.execute("SELECT sante from CREATURE;")
@@ -223,7 +225,7 @@ def statutAffiche(dicPaliers:dict,dicStatuts:dict) -> list[str]:
         statuts.append("est heureux")
     return statuts
 
-#statutAffiche(dicPaliers,dicStatuts)
+#print(statutAffiche({"santé": 50, "nourri": 50, "désaltéré": 50, "ennui": 5}))
 
 def statutAffecte(dicStatuts:dict) -> dict:
                     #jour heure minute

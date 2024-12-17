@@ -33,11 +33,52 @@ async function reset() {
 }
 }
 
+function changeVisage(image) {
+    tama = document.getElementById("face")
+    tama.src = "http://127.0.0.1:8000/static/Assets/"+image
+    return true
+}
+
+
+
+async function changementAvatar() {
+    //A chaque appel de cette fonction, le visage du tamagotchi sera changé en fonction des stats reçues de la database
+    let data = await fetchDataStatsTamagotchi()
+    vie = data["sante"]
+    if (vie <= 50) {
+        if (vie <= 25) {
+            changeVisage("bmo_alagonie.png")}
+        else {
+            changeVisage("bmo_triste.png")
+    } 
+    return true
+    } else {
+        changeVisage("bmo_sourit.png")
+    }
+    temperature = data["temperature"]
+    if (temperature = "froid") {
+        changeVisage("bmo_froid.png")
+        return true
+    } else if (temperature = "chaud") {
+        changeVisage("bmo_chaud.png")
+        return true
+    }
+    ennui = data["ennui"]
+    if (ennui > 0) {
+        if (ennui > 5) {
+            changeVisage("bmo_kawaii.png")
+        } else {
+            changeVisage("bmo_sourit.png")
+        }
+    } else {
+        changeVisage("bmo_triste.png")
+    }
+    return true
+}
 
 const idStats = {"sante":"progress-done1", "nourri":"progress-done2", "desaltere":"progress-done3", "ennui":"progress-done4"};
 const input = document.querySelector('.input');
 const maxInput = document.querySelector(".maxInput");
-
 
 /* ajuste le pourcentage de barre à mettre*/
 function changerWidth(progress,finalValue) {
@@ -55,7 +96,6 @@ async function majStats() {
         changerWidth(progress,finalValue);
     }
 )}
-
 async function fetchDataStatsTamagotchi() {
     //appel des données du tamagotchi
     try {
@@ -82,7 +122,7 @@ async function fetchDataStatsTamagotchi() {
 }
 
 async function gameOver() {
-    data = await fetchDataStatsTamagotchi()
+    let data = await fetchDataStatsTamagotchi()
     try{
         sante = data["sante"]
         if (sante == 0) {
@@ -96,6 +136,13 @@ async function gameOver() {
     }
 }
 
+async function gratouilles() {
+try {
+    await fetch('/gratouille', {method: 'POST'});
+    } catch (error) {
+    console.error('Error fetching data:', error);
+    }
+}
 
 async function maj() {
     data = await fetchDataStatsTamagotchi()
@@ -149,7 +196,7 @@ async function fetchStatut() {
     
 }
 
-
+setInterval(changementAvatar,10000)
 setInterval(majStats,10000)
 setInterval(gameOver,5000)
 setInterval(maj,5000)
