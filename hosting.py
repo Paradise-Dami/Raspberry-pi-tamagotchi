@@ -31,6 +31,11 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
     return None
 
 
+@app.post("/affamer")
+async def nourrir():
+    sante=int(fx.afficher_db("bdd.db","CREATURE")["sante"])
+    fx.miseAjourDonnéeBDD("CREATURE","sante",sante-1)
+    return None
 
 @app.get("/get_stats_tamagotchi")
 async def get_stats_tamagotchi():
