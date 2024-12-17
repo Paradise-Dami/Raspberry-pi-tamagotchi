@@ -14,8 +14,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
+    
     return templates.TemplateResponse("home.html", {"request": request})
 
+@app.get("/mort", response_class=HTMLResponse)
+async def mort(request: Request):
+    fx.mourir()
+    return templates.TemplateResponse("dead_page.html", {"request": request})
 
 @app.post("/nourrir")
 async def nourrir():
@@ -30,12 +35,30 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
     background_tasks.add_task(boire)
     return None
 
+@app.post("/reset")
+async def run_script(background_tasks: BackgroundTasks, request: Request):
+    background_tasks.add_task(reset)
+    return None
 
+@app.post("/maj")
+async def run_script(background_tasks: BackgroundTasks, request: Request):
+    fx.gestionDonnees()
+    return None
 
 @app.get("/get_stats_tamagotchi")
 async def get_stats_tamagotchi():
     data = fx.afficher_db("bdd.db","CREATURE")
     return JSONResponse(content=data)
+
+@app.get("/get_statut")
+async def get_statut():
+    data = fx.statutAffiche(fx.dicPaliers,fx.dicStatuts)
+    return JSONResponse(content=data)
+
+def reset():
+    print(fx.miseAjourDonnéeBDD("CREATURE", "etat", "reanime"))
+    fx.gestionDonnees()
+    print("resettttt")
 
 
 def boire():
@@ -47,6 +70,8 @@ if __name__ == "__main__":
     uvicorn.run(app)
 
 
+    #fx.statutAffiche()
+    
 
 
 

@@ -147,7 +147,51 @@ boite_g {
   border-radius: 0px 20px 20px 0px;
   color: #fff;
   height: 100%;
-  width: 10%;
+  transition: 1s ease 0.3s;
+}
+
+#progress-done2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(to left,
+  #27d1da,
+  #34a4d5,
+  #156aee);
+  box-shadow: 0 5px 5px -6px #156aee, 0 3px 7px #34a4d5;
+  border-radius: 0px 20px 20px 0px;
+  color: #fff;
+  height: 100%;
+  transition: 1s ease 0.3s;
+}
+
+#progress-done3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(to left,
+  #27d1da,
+  #34a4d5,
+  #156aee);
+  box-shadow: 0 5px 5px -6px #156aee, 0 3px 7px #34a4d5;
+  border-radius: 0px 20px 20px 0px;
+  color: #fff;
+  height: 100%;
+  transition: 1s ease 0.3s;
+}
+
+#progress-done4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(to left,
+  #27d1da,
+  #34a4d5,
+  #156aee);
+  box-shadow: 0 5px 5px -6px #156aee, 0 3px 7px #34a4d5;
+  border-radius: 0px 20px 20px 0px;
+  color: #fff;
+  height: 100%;
   transition: 1s ease 0.3s;
 }
 
@@ -159,4 +203,9 @@ boite_g {
 .texteStat {
   margin-left: 12px;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif ;
+}
+
+boite_b {
+  text-align: center;
+  border-radius: 10px;
 }

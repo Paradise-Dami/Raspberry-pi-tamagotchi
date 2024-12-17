@@ -1,8 +1,9 @@
+"""
 import RPi.GPIO as GPIO
 import time
 from grove.grove_button import GroveButton
 from grove.adc import ADC
-
+"""
 
 def sortie_buzz(pin, quantite, delai, freq=100, dc=1)-> None:
     """Hyp: branchement du capteur sur un pin de type D
@@ -55,7 +56,7 @@ class entree_angle(ADC):
     def valeur(self)-> int:
         """Renvoit l'angle de rotation du potentiomètre (mini: 0 /maxi: 999)"""
         return self.adc.read(self.pin)
- """angle = entree_angle(0)
+    """angle = entree_angle(0)
     while True:
         print(angle.valeur)
         time.sleep(0.1)"""
@@ -71,7 +72,7 @@ def temperature(pin)-> str:
     angle = entree_angle(pin)
     temp = angle.valeur/20 - 10
 
-    dico_temp = {"Glacial": temp < 0, "Froid": 0 <= temp < 10, "Doux": 10 <= temp < 20, "Chaud": 20 <= temp < 30, "Tropical": 30 <= temp < 40, "Caniculaire": temp >= 40}
+    dico_temp = {"a froid": temp <= 10, "": 10 < temp < 30, "a chaud": 30 <= temp}
     for cle in dico_temp:
         if dico_temp[cle]:
-            return temp, cle
+            return cle, temp

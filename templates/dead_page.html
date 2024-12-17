@@ -18,20 +18,26 @@
         </header>
 
         <application class="application">
-
+            
             <boite_d>
-                    <img src="{{ url_for('static', path='Assets/image.png') }}" src="" alt="bmo_calme.png" id="face" class="avatar">
+                    <img src="{{ url_for('static', path='Assets/bmo_mort.png') }}" src="" alt="bmo_mort.png" id="face" class="avatar">
                 <div class="info_tama">
                     <p>Identité</p>
                     <p>Etat</p>
                 </div>
                 
         </application>
-            </boite_d>
-            <actions class="actions">
-                <button class="button" onclick="nourrir()">Adopter une nouvelle créature ?</button>
-            </actions>
-            <script src="{{ url_for('static', path='/script.js') }}"></script>
+        </boite_d>
+        
+        <boite_b >
+            <p class="resultat">Oh non ! Bmo est mort !</p>
+        </boite_b>
+
+        <actions class="actions">
+                <button class="button" onclick="reset()">Adopter une nouvelle créature</button>
+        </actions>
+        
+        <script src="{{ url_for('static', path='/script.js') }}"></script>
     </body>
 </html>
 
