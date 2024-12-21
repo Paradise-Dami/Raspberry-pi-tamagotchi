@@ -196,7 +196,7 @@ async function fetchStatut() {
     
 }
 
-setInterval(changementAvatar,10000)
+setInterval(changementAvatar,1000)
 setInterval(majStats,10000)
 setInterval(gameOver,5000)
 setInterval(maj,5000)

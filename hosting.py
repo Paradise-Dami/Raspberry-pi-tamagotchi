@@ -30,7 +30,7 @@ async def mort(request: Request):
 @app.post("/nourrir")
 async def nourrir() -> None:
     nourri=float(fx.afficher_db("bdd.db","CREATURE")["nourri"])
-    fx.miseAjourDonnéeBDD("CREATURE","sante",nourri+10)
+    fx.miseAjourDonnéeBDD("CREATURE","nourri",nourri+10)
     return None
 
 
@@ -51,9 +51,9 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
     return None
 
 @app.post("/gratouille")
-async def nourrir():
+async def stim():
     stim=int(fx.afficher_db("bdd.db","CREATURE")["ennui"])
-    fx.miseAjourDonnéeBDD("CREATURE","sante",stim+1)
+    fx.miseAjourDonnéeBDD("CREATURE","ennui",stim+1)
     return None
 
 @app.get("/get_stats_tamagotchi")

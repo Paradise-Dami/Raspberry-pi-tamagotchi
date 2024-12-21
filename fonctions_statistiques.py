@@ -3,6 +3,9 @@ import sqlite3
 import os
 import time
 import Fonction_Modules as fm
+import RPi.GPIO as GPIO
+from grove.grove_button import GroveButton
+from grove.adc import ADC
 
 if not os.path.isfile("bdd.db"):
     with sqlite3.connect("bdd.db", check_same_thread=False) as conn:
@@ -21,7 +24,7 @@ date: str = "2024-12-02 16:37:56"
 date2: str = "2024-12-01 23:37:56"
 affecteNormal: list = [30,  4,    2]
 affecteFort: list =   [45,  11,   5]
-
+pinPoten = 0
 def afficher_db(db: str, table: str) -> dict:
     """return la data de la table sql sous forme de dictionnaire."""
     try:
@@ -154,10 +157,10 @@ def faim(derniereConnexion,manque:list[int,int,int])-> None:
 
 def nourrir(t)-> None:
     """Augmente la statistique nourri dans la bdd"""
-    sasiete = int(fx.afficher_db("bdd.db","CREATURE")["nourri"])
+    sasiete = float(afficher_db("bdd.db","CREATURE")["nourri"])
     miseAjourDonnéeBDD("CREATURE","nourri", sasiete + 10)
     fm.sortie_buzz(5, 1, 0.5, 500, 1) #petit bruit pour confirmer l'action
-bouton_nourrir = GroveButton(16)
+bouton_nourrir = fm.GroveButton(16)
 bouton_nourrir.on_press = nourrir
 
 
@@ -209,9 +212,9 @@ def statutAffiche(dicPaliers:dict,dicStatuts:dict) -> list[str]:
     cur.execute("SELECT sante, nourri, desaltere, ennui from CREATURE;")
     sante, nourri, desaltere, ennui = cur.fetchall()[0]
     d = {"sante": float(sante), "nourri": float(nourri), "desaltere": float(desaltere), "ennui": float(ennui)}
-    #statTemp = fm.temperature(pinPoten)
+    statTemp = fm.temperature(pinPoten)
     statuts = []
-    #statuts.append(statTemp)
+    statuts.append(statTemp)
     for i in d:
         if d[i] < dicPaliers[i]:
             statuts.append(dicStatuts[i])
