@@ -15,20 +15,24 @@ if not os.path.isfile("bdd.db"):
         cur.execute("INSERT INTO CREATURE(nom,sante, nourri, desaltere, ennui, etat,  derniereConnexion) VALUES('Bmo', 100, 20, 20, 10, 'vivant', '" + str(dt.today().strftime("%Y-%m-%d %H:%M:%S")) + "' );")
         cur.execute("INSERT INTO CAPTEURS(boutonNourrir,boutonBoire,potentiometre) VALUES(False,False,50);") #50 charge neutre temporaire
 
-#----Variables----
-database = sqlite3.connect("bdd.db", check_same_thread=False)
-dicStatuts: dict= {"sante":"est malade", "nourri":"a faim",
+#----Constantes----
+DATABASE = sqlite3.connect("bdd.db", check_same_thread=False)
+DIC_STATUTS: dict= {"sante":"est malade", "nourri":"a faim",
                          "ennui":"s'ennuie" , "desaltere":"a soif"}
-dicPaliers: dict = {"sante": 50, "nourri": 50, "desaltere": 50, "ennui": 50}
+DIC_PALIERS: dict = {"sante": 50, "nourri": 50, "desaltere": 50, "ennui": 50}
 date: str = "2024-12-02 16:37:56"
 date2: str = "2024-12-01 23:37:56"
-affecteNormal: list = [30,  4,    2]
-affecteFort: list =   [45,  11,   5]
-pinPoten = 0
+AFFECTE_NORMAL: list = [30,  4,    12]
+AFFECTE_FORT_SANTE: list = [-30,  -4,    -12]
+AFFECTE_FORT: list = [45,  11,   15]
+AFFECTE_NORMAL_SANTE : list =   [-45,  -11,   -5]
+PIN_POTEN = 0
+
+
 def afficher_db(db: str, table: str) -> dict:
     """return la data de la table sql sous forme de dictionnaire."""
     try:
-        con = database
+        con = DATABASE
         con.row_factory = sqlite3.Row
         
         # Exécution de la requête
@@ -53,7 +57,7 @@ def afficher_db(db: str, table: str) -> dict:
 
 def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int )-> None:
     """met à jour les attributs de la base de données"""
-    conn = database
+    conn = DATABASE
     cur = conn.cursor()
     time.sleep(1)
     cur.execute("UPDATE " + table + " SET " + attribut + " = '" + str(donnee) + "';")  # 50 charge neutre temporaire
@@ -61,9 +65,10 @@ def miseAjourDonnéeBDD(table:str,attribut:str,donnee:str | int )-> None:
     t = cur.fetchall()[0][1]
     return(t)
 
+
 def gestionDonnees()-> None:
-    # crée une database si elle n'existe pas déjà avec les tables
-    conn = database
+    # crée une DATABASE si elle n'existe pas déjà avec les tables
+    conn = DATABASE
     cur = conn.cursor()
     
     #sinon modifie les données normalement
@@ -75,16 +80,16 @@ def gestionDonnees()-> None:
         return  
         
     elif s == "reanime": #(ça veut dire que le bouton de reset a été pressé sur le site, qui a modifié la db)
-        cur.execute("update CREATURE set sante = 100, nourri = 50, desaltere = 50, ennui = 50, etat = 'vivant' from (select * from CREATURE);")   
+        cur.execute("update CREATURE set sante = 70, nourri = 20, desaltere = 50, ennui = 50, etat = 'vivant' from (select * from CREATURE);")   
     else:
         # sinon modifie les données normalement
         derniereConnexion()
-    
+        
 
 
 def tempsPasse(derniereConnexion:str="")-> list:
     if derniereConnexion == "":
-        conn = database
+        conn = DATABASE
         cur = conn.cursor()
         cur.execute("SELECT derniereConnexion from CREATURE;")
         derniereConnexion = cur.fetchall()[0][0] #permet de récup les résultats des lignes exécutées
@@ -98,21 +103,23 @@ def tempsPasse(derniereConnexion:str="")-> list:
     return [ecart_jrs,ecart_h,ecart_min]
 
 
-def stat_A_Zero(stat:int):
+def statMinMax(stat:int):
     #renvoie la stat à zéro si elle est inférieure à 0
     if stat < 0:
         return 0
+    elif stat > 100:
+        return 100
     else:
         return stat
+
 
 def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
 
     j, h, m = tempsPasse1[0], tempsPasse1[1], tempsPasse1[2]
-    conn = database
+    conn = DATABASE
     cur = conn.cursor()
     cur.execute("SELECT "+nomStatSpe+" from CREATURE;")
     statSpe = float(cur.fetchall()[0][0])
-    #statSpe = cur.fetchall()[0][0]
     cur.execute("SELECT sante from CREATURE;")
         
     stats = float(cur.fetchall()[0][0])
@@ -120,11 +127,11 @@ def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
     manqueTempsReel = manque_grosManque[2]
     manque = manque_grosManque[1]
     grosManque = manque_grosManque[0]
-
+    print(manque)
     while j > 0 or h > 0 or m > 0:
         
         if statSpe <= 0:
-            if j >= 0:
+            if j > 0:
                 stats -= grosManque/2
                 j -= 1
             elif h > 0:
@@ -145,8 +152,11 @@ def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
                 m -= 1
     
     print(statSpe,stats)
-    miseAjourDonnéeBDD("CREATURE",nomStatSpe, stat_A_Zero(statSpe))
-    miseAjourDonnéeBDD("CREATURE", "sante", stat_A_Zero(stats))
+    if nomStatSpe == "sante":
+        miseAjourDonnéeBDD("CREATURE", "sante", statMinMax(statSpe))
+    else:
+        miseAjourDonnéeBDD("CREATURE",nomStatSpe, statMinMax(statSpe))
+        miseAjourDonnéeBDD("CREATURE", "sante", statMinMax(stats))
     
 
 def faim(derniereConnexion,manque:list[int,int,int])-> None:
@@ -158,7 +168,9 @@ def faim(derniereConnexion,manque:list[int,int,int])-> None:
 def nourrir(t)-> None:
     """Augmente la statistique nourri dans la bdd"""
     sasiete = float(afficher_db("bdd.db","CREATURE")["nourri"])
-    miseAjourDonnéeBDD("CREATURE","nourri", sasiete + 10)
+    sasiete += 10
+    sasieteCheck = statMinMax(sasiete)
+    miseAjourDonnéeBDD("CREATURE","nourri", sasieteCheck)
     fm.sortie_buzz(5, 1, 0.5, 500, 1) #petit bruit pour confirmer l'action
 bouton_nourrir = fm.GroveButton(16)
 bouton_nourrir.on_press = nourrir
@@ -174,11 +186,17 @@ def ennui(derniereConnexion, manque:list):
     besoinQuiSEcoule("ennui",tempsPasse(derniereConnexion),manque)
 
 
+def soin(derniereConnexion, manque:list):
+    #manquesNegatifs
+    print("soin")
+    besoinQuiSEcoule("sante",tempsPasse(derniereConnexion),manque)
+
+
 def derniereConnexion() -> None:
     #save la dernière connexion toutes les 1 minutes
-    global dicStatuts
+    global DIC_STATUTS
     t = tempsPasse()
-    conn = database
+    conn = DATABASE
     cur = conn.cursor()
     cur.execute("SELECT derniereConnexion from CREATURE;")
     derniereCo_save = cur.fetchall()[0][0]
@@ -186,16 +204,17 @@ def derniereConnexion() -> None:
         miseAjourDonnéeBDD("CREATURE", "derniereConnexion", str(dt.now().strftime("%Y-%m-%d %H:%M:%S")))
     if t[2] > 1 or t[1] > 0 or t[0] > 0:
         miseAjourDonnéeBDD("CREATURE", "derniereConnexion", str(dt.now().strftime("%Y-%m-%d %H:%M:%S")))
-        affectation = statutAffecte(dicStatuts)
+        affectation = statutAffecte(DIC_STATUTS)
         #mise à jour de toutes les autres stats
         faim(derniereCo_save,affectation["nourri"])
         soif(derniereCo_save,affectation["desaltere"])
         ennui(derniereCo_save,affectation["ennui"])
+        soin(derniereCo_save,affectation["sante"])
 #derniereConnexion()
 
 
 def mourir() -> None:
-    conn = database
+    conn = DATABASE
     cur = conn.cursor()
     cur.execute("SELECT sante from CREATURE;")
     sante = float(cur.fetchall()[0][0])
@@ -203,68 +222,72 @@ def mourir() -> None:
         miseAjourDonnéeBDD("CREATURE", "etat", "mort")
 
 
-def statutAffiche(dicPaliers:dict,dicStatuts:dict) -> list[str]:
+def statutAffiche(DIC_PALIERS:dict,DIC_STATUTS:dict) -> list[str]:
 
-    global pinPoten
+    global PIN_POTEN
     #récupère toutes les stats actuelles de la BDD
-    conn = database
+    conn = DATABASE
     cur = conn.cursor()
     cur.execute("SELECT sante, nourri, desaltere, ennui from CREATURE;")
     sante, nourri, desaltere, ennui = cur.fetchall()[0]
     d = {"sante": float(sante), "nourri": float(nourri), "desaltere": float(desaltere), "ennui": float(ennui)}
-    statTemp = fm.temperature(pinPoten)
+    statTemp, temp = fm.temperature(PIN_POTEN)
+    miseAjourDonnéeBDD("CAPTEURS", "potentiometre", temp)
     statuts = []
-    statuts.append(statTemp)
+    if statTemp != "":
+        statuts.append(statTemp)
     for i in d:
-        if d[i] < dicPaliers[i]:
-            statuts.append(dicStatuts[i])
-
+        if d[i] < DIC_PALIERS[i]:
+            statuts.append(DIC_STATUTS[i])
+    print(statuts)
     # si le Tamagotchi a tous les statuts, il est triste
-    if len(statuts) == len(dicStatuts):
+    if len(statuts) == len(DIC_STATUTS):
         statuts.append("est triste")
 
     #à l'inverse, s'il n'en a aucun, il est heureuxx !
+    
     elif len(statuts) == 0:
         statuts.append("est heureux")
+        
     return statuts
 
 #print(statutAffiche({"santé": 50, "nourri": 50, "désaltéré": 50, "ennui": 5}))
 
-def statutAffecte(dicStatuts:dict) -> dict:
+def statutAffecte(DIC_STATUTS:dict) -> dict:
                     #jour heure minute
-    global affecteNormal
-    global affecteFort
+    global AFFECTE_NORMAL
+    global AFFECTE_FORT
+    global AFFECTE_NORMAL_SANTE
+    global AFFECTE_FORT_SANTE
     dictAffectStats = {"sante": None, "nourri": None, "desaltere": None, "ennui": None}
     #au cas où on change le nom associé à la clé
-    malade = dicStatuts["sante"]
+    malade = DIC_STATUTS["sante"]
 
-    statutsCreature = statutAffiche(dicPaliers,dicStatuts)
-    for statut in dicStatuts:
-        if dicStatuts[statut] in statutsCreature:
+    statutsCreature = statutAffiche(DIC_PALIERS,DIC_STATUTS)
+    for statut in DIC_STATUTS:
+        if dictAffectStats[statut] in statutsCreature:
             #s'il est malade, toutes ses stats se vident plus vite
-            if statut == malade:
-                for s in dicStatuts:
-                    dictAffectStats[s] = affecteFort
+            if DIC_STATUTS[statut] == malade:
+                for s in DIC_STATUTS:
+                    dictAffectStats[s] = AFFECTE_FORT
+                dictAffectStats["sante"] = AFFECTE_FORT_SANTE
                 return dictAffectStats
-            else:
-                dictAffectStats[statut] = affecteFort
         else:
-            dictAffectStats[statut] = affecteNormal
-
+            dictAffectStats[statut] = AFFECTE_NORMAL
+    dictAffectStats["sante"] = AFFECTE_NORMAL_SANTE
     return dictAffectStats
 
 
-#statutAffecte(dicStatuts) #mets les affectations liées au statut dan la base de données..
+#statutAffecte(DIC_STATUTS) #mets les affectations liées au statut dan la base de données..
 
 
-"""
-with database as conn:
+
+with DATABASE as conn:
     cur = conn.cursor()
-    cur.execute("update CREATURE set sante = 100, nourri = 50, desaltere = 50, ennui = 50 from (select * from CREATURE);")
+    cur.execute("update CREATURE set sante = 24, nourri = 50, desaltere = 50, ennui = 50 from (select * from CREATURE);")
     cur.execute("SELECT sante, nourri, desaltere, ennui from CREATURE;")
     print(cur.fetchall()[0])
 listePaliers = [50, 50, 50, 50]
 #statutAffiche(listePaliers)
-"""
 
-gestionDonnees()
+#gestionDonnees()

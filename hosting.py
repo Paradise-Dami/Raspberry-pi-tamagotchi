@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
 import fonctions_statistiques as fx
-
+import sqlite3
 
 app = FastAPI()
 
@@ -29,15 +29,19 @@ async def mort(request: Request):
 
 @app.post("/nourrir")
 async def nourrir() -> None:
-    nourri=float(fx.afficher_db("bdd.db","CREATURE")["nourri"])
-    fx.miseAjourDonnéeBDD("CREATURE","nourri",nourri+10)
+    nourri =float(fx.afficher_db("bdd.db","CREATURE")["nourri"])
+    nourri += 10
+    nourriCheck = fx.statMinMax(nourri)
+    fx.miseAjourDonnéeBDD("CREATURE","nourri",nourriCheck)
     return None
 
 
 @app.post("/boire")
 async def boire() -> None:
     desaltere=float(fx.afficher_db("bdd.db","CREATURE")["desaltere"])
-    fx.miseAjourDonnéeBDD("CREATURE","desaltere",desaltere+10)
+    desaltere += 10
+    desaltereCheck = fx.statMinMax(desaltere)
+    fx.miseAjourDonnéeBDD("CREATURE","desaltere",desaltereCheck)
     return None
 
 @app.post("/reset")
@@ -52,8 +56,10 @@ async def run_script(background_tasks: BackgroundTasks, request: Request):
 
 @app.post("/gratouille")
 async def stim():
-    stim=int(fx.afficher_db("bdd.db","CREATURE")["ennui"])
-    fx.miseAjourDonnéeBDD("CREATURE","ennui",stim+1)
+    stim=float(fx.afficher_db("bdd.db","CREATURE")["ennui"])
+    stim += 5
+    stimCheck = fx.statMinMax(stim)
+    fx.miseAjourDonnéeBDD("CREATURE","ennui",stimCheck)
     return None
 
 @app.get("/get_stats_tamagotchi")
@@ -71,7 +77,20 @@ async def get_statut():
     Récupère l'humeur du tamagotchi et ensuite les envoient
     au fichier script.js
     """
-    data = fx.statutAffiche(fx.dicPaliers,fx.dicStatuts)
+    data = fx.statutAffiche(fx.DIC_PALIERS,fx.DIC_STATUTS)
+    return JSONResponse(content=data)
+
+
+@app.get("/get_temp")
+async def get_temp():
+    """
+    Récupère l'humeur du tamagotchi et ensuite les envoient
+    au fichier script.js
+    """
+    conn = fx.DATABASE
+    cur = conn.cursor()
+    cur.execute("SELECT temp from CAPTEURS;")
+    temp = float(cur.fetchall()[0][0])
     return JSONResponse(content=data)
 
 def reset():

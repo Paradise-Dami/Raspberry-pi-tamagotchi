@@ -45,7 +45,18 @@ async function changementAvatar() {
     //A chaque appel de cette fonction, le visage du tamagotchi sera changé en fonction des stats reçues de la database
     let data = await fetchDataStatsTamagotchi()
     vie = data["sante"]
-    if (vie <= 50) {
+    if ( data['etat']=='mort') {
+        return true
+    }
+    if (data['etat'].includes("est triste")) {
+        changeVisage("bmo_triste.png")
+        return true
+    } 
+    else if (data['etat'].includes("est heureux")) {
+        changeVisage("bmo_kawaii.png")
+        return true
+    }
+    if (vie <= 50 ) {
         if (vie <= 25) {
             changeVisage("bmo_alagonie.png")}
         else {
@@ -55,17 +66,17 @@ async function changementAvatar() {
     } else {
         changeVisage("bmo_sourit.png")
     }
-    temperature = data["temperature"]
-    if (temperature = "froid") {
+    
+    if (data['etat'].includes('a froid')) {
         changeVisage("bmo_froid.png")
         return true
-    } else if (temperature = "chaud") {
+    } else if (data['etat'].includes("a chaud")) {
         changeVisage("bmo_chaud.png")
         return true
     }
     ennui = data["ennui"]
-    if (ennui > 0) {
-        if (ennui > 5) {
+    if (ennui > 10) {
+        if (ennui > 60) {
             changeVisage("bmo_kawaii.png")
         } else {
             changeVisage("bmo_sourit.png")
@@ -169,7 +180,30 @@ async function maj() {
         console.error('Error fetching data:', error);
 }
 }
+async function fetchTemp() {
+    //appel de la temp du tamagotchi, pour plus tard l'afficher et le vérifier
+    try {
+        const response = await fetch('get_temp', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Convertir la réponse JSON en objet JavaScript
+        const data = await response.json();
+
+        // Exemple d'utilisation des données
+        console.log(data)
+        return data
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données:", error.message);
+    }
+    
+}
 
 async function fetchStatut() {
     //appel des données du tamagotchi
@@ -197,6 +231,6 @@ async function fetchStatut() {
 }
 
 setInterval(changementAvatar,1000)
-setInterval(majStats,10000)
+setInterval(majStats,5000)
 setInterval(gameOver,5000)
 setInterval(maj,5000)
