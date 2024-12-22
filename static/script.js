@@ -1,4 +1,4 @@
-
+gameOverEnable = false
 async function boire() {
     try {
     await fetch('/boire', {method: 'POST'});
@@ -135,16 +135,18 @@ async function fetchDataStatsTamagotchi() {
 
 async function gameOver() {
     let data = await fetchDataStatsTamagotchi()
-    try{
-        sante = data["sante"]
-        if (sante == 0) {
-            window.location.replace("/mort");
-        }
-        else {
-            console.log("en vie")
-        }
-    } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error.message)
+    if (gameOverEnable) {
+        try{
+            sante = data["sante"]
+            if (sante <= 0) {
+                window.location.replace("/mort");
+            }
+            else {
+                console.log("en vie")
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des données:", error.message)
+        } 
     }
 }
 
@@ -159,6 +161,7 @@ try {
 async function maj() {
     data = await fetchDataStatsTamagotchi()
     statut = await fetchStatut()
+    gameOverEnable = true
     try {
     await fetch('/maj', {method: 'POST'});
         // on met à jour les stats continuellement
