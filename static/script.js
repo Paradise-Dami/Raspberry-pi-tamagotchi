@@ -44,15 +44,16 @@ function changeVisage(image) {
 async function changementAvatar() {
     //A chaque appel de cette fonction, le visage du tamagotchi sera changé en fonction des stats reçues de la database
     let data = await fetchDataStatsTamagotchi()
+    statut = await fetchStatut()
     vie = data["sante"]
     if ( data['etat']=='mort') {
         return true
     }
-    if (data['etat'].includes("est triste")) {
+    if (statut.includes("est triste")) {
         changeVisage("bmo_triste.png")
         return true
     } 
-    else if (data['etat'].includes("est heureux")) {
+    else if (statut.includes("est heureux")) {
         changeVisage("bmo_kawaii.png")
         return true
     }
@@ -67,10 +68,10 @@ async function changementAvatar() {
         changeVisage("bmo_sourit.png")
     }
     
-    if (data['etat'].includes('a froid')) {
+    if (statut.includes('a froid')) {
         changeVisage("bmo_froid.png")
         return true
-    } else if (data['etat'].includes("a chaud")) {
+    } else if (statut.includes("a chaud")) {
         changeVisage("bmo_chaud.png")
         return true
     }

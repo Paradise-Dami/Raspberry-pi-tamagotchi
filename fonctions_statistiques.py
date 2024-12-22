@@ -20,8 +20,6 @@ DATABASE = sqlite3.connect("bdd.db", check_same_thread=False)
 DIC_STATUTS: dict= {"sante":"est malade", "nourri":"a faim",
                          "ennui":"s'ennuie" , "desaltere":"a soif"}
 DIC_PALIERS: dict = {"sante": 50, "nourri": 50, "desaltere": 50, "ennui": 50}
-date: str = "2024-12-02 16:37:56"
-date2: str = "2024-12-01 23:37:56"
 AFFECTE_NORMAL: list = [30,  4,    12]
 AFFECTE_FORT_SANTE: list = [-30,  -4,    -12]
 AFFECTE_FORT: list = [45,  11,   15]
@@ -123,11 +121,9 @@ def besoinQuiSEcoule(nomStatSpe:str,tempsPasse1:list,manque_grosManque:list):
     cur.execute("SELECT sante from CREATURE;")
         
     stats = float(cur.fetchall()[0][0])
-    print(statSpe, stats)
     manqueTempsReel = manque_grosManque[2]
     manque = manque_grosManque[1]
     grosManque = manque_grosManque[0]
-    print(manque)
     while j > 0 or h > 0 or m > 0:
         
         if statSpe <= 0:
@@ -210,7 +206,6 @@ def derniereConnexion() -> None:
         soif(derniereCo_save,affectation["desaltere"])
         ennui(derniereCo_save,affectation["ennui"])
         soin(derniereCo_save,affectation["sante"])
-#derniereConnexion()
 
 
 def mourir() -> None:
@@ -251,7 +246,6 @@ def statutAffiche(DIC_PALIERS:dict,DIC_STATUTS:dict) -> list[str]:
         
     return statuts
 
-#print(statutAffiche({"santé": 50, "nourri": 50, "désaltéré": 50, "ennui": 5}))
 
 def statutAffecte(DIC_STATUTS:dict) -> dict:
                     #jour heure minute
@@ -278,16 +272,13 @@ def statutAffecte(DIC_STATUTS:dict) -> dict:
     return dictAffectStats
 
 
-#statutAffecte(DIC_STATUTS) #mets les affectations liées au statut dan la base de données..
 
-
-
+"""
+#les stats facilement modifiables à votre disposition pour faire les tests
 with DATABASE as conn:
     cur = conn.cursor()
     cur.execute("update CREATURE set sante = 24, nourri = 50, desaltere = 50, ennui = 50 from (select * from CREATURE);")
     cur.execute("SELECT sante, nourri, desaltere, ennui from CREATURE;")
     print(cur.fetchall()[0])
 listePaliers = [50, 50, 50, 50]
-#statutAffiche(listePaliers)
-
-#gestionDonnees()
+"""
